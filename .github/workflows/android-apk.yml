@@ -2,6 +2,7 @@ name: android-apk
 
 # Builds an installable Android debug APK without EAS, so self-hosters can hand out a
 # client that already points at their own deployment. Run manually or on push.
+# The ubuntu runner image ships the Android SDK, so no setup-android action is needed.
 on:
   workflow_dispatch:
   push:
@@ -35,8 +36,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -45,6 +44,9 @@ jobs:
           EXPO_NO_TELEMETRY: "1"
           CI: "1"
         run: pnpm --filter @rakazo/mobile exec expo prebuild --platform android --no-install
+
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
 
       - name: Gradle assembleDebug
         working-directory: apps/mobile/android
