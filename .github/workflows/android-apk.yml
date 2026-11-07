@@ -35,7 +35,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
